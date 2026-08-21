@@ -1,0 +1,14 @@
+.DS_Store
+__pycache__/
+*.py[cod]
+node_modules/
+dist/
+coverage/
+.vite/
+*.tsbuildinfo
+
+# Discourse account archives contain private posts and authentication metadata.
+user_archive*/
+*.csv
+*.zip
+data/

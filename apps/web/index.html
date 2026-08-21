@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta
+      name="description"
+      content="在浏览器本地解析 Discourse 用户归档，查看 USCardForum 徽章进度。文件不会上传或保存。"
+    >
+    <meta name="theme-color" content="#f7f5ef">
+    <!-- production-csp -->
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+    <title>USCardForum 徽章进度</title>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="./" aria-label="USCardForum 徽章进度首页">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" focusable="false">
+            <path d="M12 2.8 19 6v5.1c0 4.6-2.8 8.6-7 10.1-4.2-1.5-7-5.5-7-10.1V6l7-3.2Z" />
+            <path d="m8.9 11.8 2 2 4.3-4.4" />
+          </svg>
+        </span>
+        <span>USCard Badge Tracker</span>
+      </a>
+      <span class="local-chip">
+        <span class="status-dot" aria-hidden="true"></span>
+        纯本地处理
+      </span>
+    </header>
+
+    <main>
+      <section class="hero" aria-labelledby="page-title">
+        <div class="hero-copy">
+          <p class="eyebrow">LOCAL-FIRST · NO SERVER</p>
+          <h1 id="page-title">离下一枚徽章<br><span>还有多远？</span></h1>
+          <p class="hero-lead">
+            导入自己的 Discourse 用户归档，马上查看“受人敬仰”等徽章进度，以及最接近达标的帖子数量。
+          </p>
+
+          <div class="privacy-promise" role="note">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="5" y="10" width="14" height="10" rx="3" />
+              <path d="M8.5 10V7.5a3.5 3.5 0 0 1 7 0V10M12 14v2" />
+            </svg>
+            <div>
+              <strong>你的归档不会离开浏览器</strong>
+              <span>Your archive never leaves your browser.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="upload-panel" id="upload-panel">
+          <div class="panel-heading">
+            <span class="step-number">01</span>
+            <div>
+              <h2>导入用户归档</h2>
+              <p>ZIP 无需解压，也可以只选 CSV</p>
+            </div>
+          </div>
+
+          <label class="drop-zone" id="drop-zone" for="archive-input">
+            <input
+              class="visually-hidden"
+              id="archive-input"
+              type="file"
+              accept=".zip,.csv,application/zip,text/csv"
+            >
+            <span class="upload-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" focusable="false">
+                <path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5" />
+                <path d="M5 14v3.5A2.5 2.5 0 0 0 7.5 20h9a2.5 2.5 0 0 0 2.5-2.5V14" />
+              </svg>
+            </span>
+            <strong>拖入 archive.zip</strong>
+            <span>或解压后的 <code>user_archive.csv</code></span>
+            <span class="select-button">选择文件</span>
+          </label>
+
+          <p class="file-hint">ZIP 最大 50 MB · CSV 最大 30 MB · 建议在桌面处理较大归档</p>
+          <div class="error-message" id="error-message" role="alert" hidden></div>
+
+          <div class="processing" id="processing" aria-live="polite" hidden>
+            <span class="spinner" aria-hidden="true"></span>
+            <span id="processing-text">正在读取文件…</span>
+          </div>
+        </div>
+      </section>
+
+      <details class="archive-guide">
+        <summary>
+          <span>如何获取用户归档？</span>
+          <span class="summary-action">查看步骤 <span aria-hidden="true">＋</span></span>
+        </summary>
+        <ol>
+          <li><span>1</span>登录 USCardForum，打开头像菜单</li>
+          <li><span>2</span>进入“偏好设置”中的账户页面</li>
+          <li><span>3</span>请求用户归档，并下载生成的 ZIP</li>
+          <li><span>4</span>回到这里直接选择 ZIP，无需手动解压</li>
+        </ol>
+      </details>
+
+      <section class="results" id="results" aria-labelledby="results-title" hidden>
+        <div class="results-heading">
+          <div>
+            <p class="eyebrow">YOUR PROGRESS</p>
+            <h2 id="results-title" tabindex="-1">你的徽章进度</h2>
+            <p id="results-summary"></p>
+          </div>
+          <button class="secondary-button" id="reset-button" type="button">换一份归档</button>
+        </div>
+
+        <div class="badge-grid" id="badge-grid"></div>
+
+        <div class="insights-grid">
+          <article class="insight-card near-card">
+            <div class="card-heading">
+              <div>
+                <p class="card-kicker">NEXT BEST MOVES</p>
+                <h3>最接近计入的帖子</h3>
+              </div>
+              <span class="card-icon" aria-hidden="true">↗</span>
+            </div>
+            <div class="near-list" id="near-list"></div>
+            <p class="impact-note" id="impact-note"></p>
+          </article>
+
+          <article class="insight-card distribution-card">
+            <div class="card-heading">
+              <div>
+                <p class="card-kicker">LIKE DISTRIBUTION</p>
+                <h3>帖子点赞分布</h3>
+              </div>
+              <span class="card-icon" aria-hidden="true">≋</span>
+            </div>
+            <div class="distribution-list" id="distribution-list"></div>
+          </article>
+        </div>
+
+        <p class="result-privacy">
+          本次只保留页面上显示的汇总数字；刷新、关闭页面或清除结果后即消失。
+        </p>
+      </section>
+
+      <section class="how-it-works" aria-labelledby="how-title">
+        <div class="section-heading">
+          <p class="eyebrow">PRIVATE BY DESIGN</p>
+          <h2 id="how-title">文件留在本机，结果只给你</h2>
+        </div>
+        <div class="feature-grid">
+          <article>
+            <span>01</span>
+            <h3>浏览器内解压</h3>
+            <p>只解压归档里的 <code>user_archive.csv</code>，不会解析认证记录等其他文件。</p>
+          </article>
+          <article>
+            <span>02</span>
+            <h3>只计算匿名汇总</h3>
+            <p>帖子正文、标题、链接和用户名都不会展示或保存。</p>
+          </article>
+          <article>
+            <span>03</span>
+            <h3>零上传、无应用内追踪</h3>
+            <p>没有后端、分析脚本或第三方字体；所选文件和计算结果不会传输。</p>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <span>USCard Badge Tracker · v0.1</span>
+      <span>非 USCardForum 官方工具</span>
+    </footer>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

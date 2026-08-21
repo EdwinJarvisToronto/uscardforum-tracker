@@ -1,0 +1,20 @@
+{
+  "admired": {
+    "name": "受人敬仰",
+    "type": "post_like_threshold",
+    "post_like_threshold": 5,
+    "target": 300
+  },
+  "respected": {
+    "name": "受人尊敬",
+    "type": "post_like_threshold",
+    "post_like_threshold": 2,
+    "target": 100
+  },
+  "appreciated": {
+    "name": "受到赞赏",
+    "type": "post_like_threshold",
+    "post_like_threshold": 1,
+    "target": 20
+  }
+}
