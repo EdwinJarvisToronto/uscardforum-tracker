@@ -97,6 +97,7 @@ footer {
 
 .site-header {
   display: flex;
+  gap: 16px;
   align-items: center;
   justify-content: space-between;
   min-height: 82px;
@@ -133,6 +134,13 @@ footer {
   stroke-width: 1.8;
 }
 
+.header-actions {
+  display: flex;
+  flex-shrink: 0;
+  gap: 10px;
+  align-items: center;
+}
+
 .local-chip {
   display: inline-flex;
   gap: 8px;
@@ -152,6 +160,73 @@ footer {
   background: #38a169;
   border-radius: 50%;
   box-shadow: 0 0 0 4px rgba(56, 161, 105, 0.12);
+}
+
+.github-star-link {
+  display: inline-grid;
+  grid-template-columns: auto minmax(30px, auto);
+  min-height: 34px;
+  overflow: hidden;
+  color: #25292e;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 0.75rem;
+  font-weight: 650;
+  line-height: 1;
+  text-decoration: none;
+  background: #ffffff;
+  border: 1px solid #d1d9e0;
+  border-radius: 7px;
+  box-shadow: 0 1px 0 rgba(31, 35, 40, 0.04);
+  transition: border-color 140ms ease, box-shadow 140ms ease,
+    transform 140ms ease;
+}
+
+.github-star-link:hover {
+  border-color: #aeb7c2;
+  box-shadow: 0 2px 5px rgba(31, 35, 40, 0.1);
+}
+
+.github-star-link:active {
+  transform: translateY(1px);
+}
+
+.github-star-link.is-count-unavailable {
+  grid-template-columns: auto;
+}
+
+.github-star-link.is-count-unavailable .github-star-action {
+  border-right: 0;
+}
+
+.github-star-action,
+.github-star-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.github-star-action {
+  gap: 6px;
+  padding: 7px 9px;
+  background: linear-gradient(#f6f8fa, #eef1f4);
+  border-right: 1px solid #d1d9e0;
+}
+
+.github-star-link:hover .github-star-action {
+  background: #eaeef2;
+}
+
+.github-star-action svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
+.github-star-count {
+  min-width: 30px;
+  padding: 7px 8px;
+  font-variant-numeric: tabular-nums;
+  background: #ffffff;
 }
 
 .hero {
@@ -881,6 +956,10 @@ footer {
     min-height: 70px;
   }
 
+  .local-chip {
+    display: none;
+  }
+
   .brand {
     font-size: 0.78rem;
   }
@@ -888,11 +967,6 @@ footer {
   .brand-mark {
     width: 30px;
     height: 30px;
-  }
-
-  .local-chip {
-    padding: 7px 9px;
-    font-size: 0.67rem;
   }
 
   h1 {
@@ -959,6 +1033,12 @@ footer {
     justify-content: center;
     flex-direction: column;
     gap: 5px;
+  }
+}
+
+@media (max-width: 360px) {
+  .brand > span:last-child {
+    display: none;
   }
 }
 

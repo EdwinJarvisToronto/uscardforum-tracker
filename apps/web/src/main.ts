@@ -12,6 +12,11 @@ import {
   type NearThresholdBucket,
 } from "@uscard/core";
 
+import {
+  fetchGitHubStarCount,
+  formatGitHubStarCount,
+} from "./github-stars";
+
 import "./styles.css";
 
 function getElement<T extends HTMLElement>(id: string): T {
@@ -34,6 +39,8 @@ const nearList = getElement<HTMLDivElement>("near-list");
 const impactNote = getElement<HTMLParagraphElement>("impact-note");
 const distributionList = getElement<HTMLDivElement>("distribution-list");
 const resetButton = getElement<HTMLButtonElement>("reset-button");
+const githubStarLink = getElement<HTMLAnchorElement>("github-star-link");
+const githubStarCount = getElement<HTMLSpanElement>("github-star-count");
 
 let isProcessing = false;
 let dragDepth = 0;
@@ -56,6 +63,22 @@ function formatNumber(value: number): string {
 function formatBytes(bytes: number): string {
   if (bytes < 1024 * 1024) return `${Math.max(bytes / 1024, 0.1).toFixed(1)} KB`;
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+async function loadGitHubStarCount(): Promise<void> {
+  const count = await fetchGitHubStarCount();
+  if (count === null) {
+    githubStarCount.hidden = true;
+    githubStarLink.classList.add("is-count-unavailable");
+    return;
+  }
+
+  githubStarCount.textContent = formatGitHubStarCount(count);
+  githubStarCount.title = `${formatNumber(count)} 个 Star`;
+  githubStarLink.setAttribute(
+    "aria-label",
+    `在新标签页打开 GitHub 项目仓库；当前 ${formatNumber(count)} 个 Star，欢迎支持`,
+  );
 }
 
 function nextPaint(): Promise<void> {
@@ -329,3 +352,5 @@ resetButton.addEventListener("click", () => {
   });
   fileInput.focus();
 });
+
+void loadGitHubStarCount();
